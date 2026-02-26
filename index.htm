@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit 4: Thermal Energy Quiz</title>
+    <title>Unit 4: Thermal Energy Master Quiz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --walmart-blue: #0053e2;
-            --off-white: #f8f9fa;
+            --off-white: #f4f4f4;
             --pure-white: #ffffff;
-            --text-main: #202124;
-            --success-green: #2e7d32;
-            --error-red: #d32f2f;
+            --text-main: #1c1e21;
+            --success-bg: #e7f4e8;
+            --success-text: #1b5e20;
+            --error-bg: #fdecea;
+            --error-text: #c62828;
         }
 
         body {
@@ -23,242 +25,228 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
         #quiz-container {
-            width: 90%;
-            max-width: 800px;
+            width: 95%;
+            max-width: 900px;
             background: var(--pure-white);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            text-shadow: 0 0 1px rgba(0, 0, 0, 0.25);
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
             position: relative;
-            transition: all 0.3s ease;
+            overflow: hidden;
         }
 
-        .slide {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
+        .progress-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: #eee;
         }
 
-        .slide.active {
-            display: block;
+        #progress-bar {
+            height: 100%;
+            background: var(--walmart-blue);
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         h2 {
             color: var(--walmart-blue);
             font-weight: 800;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
+            margin-top: 0;
             margin-bottom: 25px;
-            border-left: 5px solid var(--walmart-blue);
-            padding-left: 15px;
+            line-height: 1.3;
         }
 
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .option-btn {
             background: var(--pure-white);
-            border: 2px solid #e0e0e0;
-            padding: 15px 20px;
-            border-radius: 8px;
+            border: 2px solid #edeff2;
+            padding: 18px 24px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 500;
+            font-size: 1.05rem;
+            font-weight: 600;
             text-align: left;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
         }
 
-        .option-btn:hover {
+        .option-btn:hover:not(:disabled) {
             border-color: var(--walmart-blue);
             background-color: #f0f7ff;
-            transform: translateX(5px);
+            transform: translateY(-2px);
         }
 
         .option-btn i {
             margin-right: 15px;
             color: var(--walmart-blue);
+            font-size: 1.2rem;
         }
 
-        .feedback {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 8px;
+        .feedback-area {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 10px;
             display: none;
-            animation: slideUp 0.4s ease-out;
+            animation: slideIn 0.3s ease-out;
         }
 
-        .feedback.correct {
-            background-color: #e8f5e9;
-            border: 1px solid var(--success-green);
-            color: var(--success-green);
-        }
+        .feedback-area.correct { background: var(--success-bg); color: var(--success-text); border: 1px solid #c3e6cb; }
+        .feedback-area.wrong { background: var(--error-bg); color: var(--error-text); border: 1px solid #f5c6cb; }
 
-        .feedback.wrong {
-            background-color: #ffebee;
-            border: 1px solid var(--error-red);
-            color: var(--error-red);
-        }
-
-        .next-btn {
-            margin-top: 20px;
+        .btn-action {
+            margin-top: 25px;
             background-color: var(--walmart-blue);
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
+            padding: 14px 30px;
+            border-radius: 6px;
             font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
             float: right;
+            transition: opacity 0.2s;
         }
 
-        @keyframes fadeIn {
+        @keyframes slideIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .progress-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 6px;
-            background-color: var(--walmart-blue);
-            transition: width 0.3s ease;
-            border-radius: 12px 12px 0 0;
-        }
+        .stats-box { font-weight: 700; color: #666; margin-bottom: 10px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
 <div id="quiz-container">
-    <div class="progress-bar" id="progress"></div>
-    <div id="quiz-content">
-        </div>
+    <div class="progress-container"><div id="progress-bar"></div></div>
+    <div id="stats" class="stats-box"></div>
+    <div id="content"></div>
 </div>
 
 <script>
-    const quizData = [
-        {
-            question: "A large pot of soup and a small bowl of soup are both at 90°C. Which statement is true?",
-            options: [
-                "They have the same thermal energy.",
-                "The pot has more thermal energy because it has more particles.",
-                "The bowl has more thermal energy because it is smaller.",
-                "They have different temperatures."
-            ],
-            correct: 1,
-            explanation: "Temperature is the *average* kinetic energy, but Thermal Energy is the *total*. Since the pot has more matter (more particles), its total energy is higher."
-        },
-        {
-            question: "Which method of heat transfer occurs when you touch a hot metal spoon?",
-            options: [
-                "Radiation",
-                "Convection",
-                "Conduction",
-                "Absolute Zero"
-            ],
-            correct: 2,
-            explanation: "Conduction is heat transfer through direct contact (touching). Metals are excellent conductors."
-        },
-        {
-            question: "In what direction does thermal energy always move?",
-            options: [
-                "From colder objects to hotter objects.",
-                "From objects with more mass to less mass.",
-                "From hotter objects to colder objects.",
-                "It moves randomly in all directions."
-            ],
-            correct: 2,
-            explanation: "Thermal energy naturally flows from higher temperature (hotter) to lower temperature (colder) until equilibrium is reached."
-        },
-        {
-            question: "Why does a puffy winter jacket keep you warm?",
-            options: [
-                "It is a good conductor.",
-                "It is a good insulator that slows down energy transfer.",
-                "It creates its own thermal energy.",
-                "It uses radiation to heat your body."
-            ],
-            correct: 1,
-            explanation: "Insulators like the air trapped in a jacket do not transfer heat easily, keeping your body heat from escaping."
-        }
+    const questions = [
+        { q: "What is matter?", a: ["Only things you can see", "Anything that takes up space and has mass", "Only solids and liquids", "Energy in motion"], c: 1, e: "Matter is defined by having mass and volume (taking up space)." },
+        { q: "What is kinetic energy?", a: ["Stored energy", "The energy of motion", "Energy of position", "Thermal equilibrium"], c: 1, e: "Kinetic energy is specifically the energy of moving objects or particles." },
+        { q: "As an object gets hotter, what happens to its particles?", a: ["They stop moving", "They move slower", "They move faster", "They disappear"], c: 2, e: "Higher temperature means higher average kinetic energy, so particles move faster." },
+        { q: "What is temperature?", a: ["Total kinetic energy", "Average kinetic energy of particles", "The amount of heat in a room", "The mass of an object"], c: 1, e: "Temperature measures the *average* speed/motion of the particles in a substance." },
+        { q: "What is thermal energy?", a: ["Average kinetic energy", "Total kinetic energy of all particles", "The same as temperature", "Energy of waves only"], c: 1, e: "Thermal energy is the *total* sum of kinetic energy of all particles combined." },
+        { q: "A 5-gallon bucket of 50°C water and a 1-cup bowl of 50°C water have...", a: ["The same thermal energy", "Same temperature, but bucket has more thermal energy", "Same thermal energy, but bucket is hotter", "The same number of particles"], c: 1, e: "Because they have the same temperature, the average speed is the same, but the bucket has more mass (more particles), so more total thermal energy." },
+        { q: "In which state of matter are particles packed close and vibrating in place?", a: ["Gas", "Liquid", "Solid", "Plasma"], c: 2, e: "Solids have a fixed shape because particles vibrate in fixed positions." },
+        { q: "When thermal energy moves from one object to another, it is called:", a: ["Temperature", "Heat", "Matter", "Freezing"], c: 1, e: "In science, 'heat' is the transfer of thermal energy between substances." },
+        { q: "What is the direction of heat transfer?", a: ["Cold to Hot", "Large to Small", "Hot to Cold", "Randomly"], c: 2, e: "Energy always moves from the higher temperature area to the lower temperature area." },
+        { q: "What is thermal equilibrium?", a: ["When objects reach absolute zero", "When two objects reach the same temperature", "When particles stop moving", "When a solid melts"], c: 1, e: "Equilibrium is the point where heat transfer stops because temperatures are equal." },
+        { q: "What happens at absolute zero?", a: ["Water boils", "Particle motion is at its minimum", "Matter turns into a gas", "Heat transfer is fastest"], c: 1, e: "Absolute zero is the theoretical point where all molecular motion nearly stops." },
+        { q: "Touching a hot metal pan is an example of:", a: ["Convection", "Radiation", "Conduction", "Insulation"], c: 2, e: "Conduction is heat transfer through direct physical contact." },
+        { q: "How does heat reach Earth from the Sun?", a: ["Conduction", "Convection", "Radiation", "Evaporation"], c: 2, e: "Radiation travels through the vacuum of space via electromagnetic waves." },
+        { q: "Which process involves warm fluids rising and cool fluids sinking?", a: ["Conduction", "Convection", "Radiation", "Vibration"], c: 1, e: "Convection creates cycles in liquids and gases due to density changes." },
+        { q: "Which material is a good conductor?", a: ["Wood", "Plastic", "Copper", "Rubber"], c: 2, e: "Metals like copper allow thermal energy to flow through them easily." },
+        { q: "Why does a metal spoon feel colder than a wooden spoon at room temperature?", a: ["Metal is naturally colder", "Metal is a better conductor and pulls heat from your hand faster", "Wood generates its own heat", "Metal is an insulator"], c: 1, e: "The metal conducts heat away from your skin quickly, making it *feel* colder even at the same temperature." },
+        { q: "An insulator is a material that:", a: ["Speeds up heat transfer", "Does not transfer heat easily", "Only works in liquids", "Is always made of metal"], c: 1, e: "Insulators like wood or plastic slow down the flow of thermal energy." },
+        { q: "What does a thermometer measure?", a: ["Total thermal energy", "Average kinetic energy (Temperature)", "The mass of particles", "The number of molecules"], c: 1, e: "Thermometers respond to the average kinetic energy of the particles hitting them." },
+        { q: "How do air conditioners make cities hotter?", a: ["They create cold matter", "They release heat from inside buildings to the outside air", "They use radiation to cool the sun", "They stop all particle motion"], c: 1, e: "AC units move thermal energy; they don't destroy it, they just pump it outside." },
+        { q: "According to your notes, a Newton's Cradle shows:", a: ["Convection currents", "Energy transfer through collisions", "Absolute zero", "Radiation"], c: 1, e: "When balls collide, energy is transferred from one to the next, much like particle collisions." },
+        { q: "Which state of matter has particles that move freely and spread out?", a: ["Solid", "Liquid", "Gas", "Metal"], c: 2, e: "Gases have high kinetic energy, allowing particles to move independently." },
+        { q: "Pre-heating a thermos with hot water helps because:", a: ["It adds more molecules to the soup", "It reduces energy transfer from the food to the container", "It creates radiation", "It turns the thermos into a conductor"], c: 1, e: "If the thermos is already warm, less thermal energy will leave your food to warm up the walls of the container." },
+        { q: "Using a magnifying glass to heat a leaf is an example of focusing:", a: ["Convection", "Conduction", "Radiation", "Insulation"], c: 2, e: "Light from the sun is radiation; the lens concentrates those waves." },
+        { q: "Which is required for conduction to occur?", a: ["A vacuum", "Direct contact", "Movement of air", "Electromagnetic waves"], c: 1, e: "Conduction requires particles to touch and collide." },
+        { q: "In a convection current, why does warm air rise?", a: ["It is more dense", "It is less dense", "It has no mass", "Gravity pulls it up"], c: 1, e: "Warm fluids expand and become less dense than the cooler fluids around them." },
+        { q: "What happens to the state of matter if you add enough heat to a liquid?", a: ["It becomes a solid", "It becomes a gas", "It stays the same", "It loses all kinetic energy"], c: 1, e: "Adding heat increases motion until the particles break free into a gas." },
+        { q: "Which of these is an example of convection?", a: ["Sunbathing", "Ironing a shirt", "Ocean currents", "Holding an ice cube"], c: 2, e: "Ocean currents are massive convection cycles moving heat around the planet." },
+        { q: "If you put a cold spoon in hot soup, when will heat stop moving?", a: ["When the spoon is hotter than the soup", "When they reach thermal equilibrium", "Never", "Immediately"], c: 1, e: "Heat flow stops once the temperatures are equal (equilibrium)." },
+        { q: "Which material would be best for a pot handle?", a: ["Copper", "Aluminum", "Plastic", "Iron"], c: 2, e: "Plastic is an insulator, so it won't burn your hand when the pot gets hot." },
+        { q: "Molecules are made of groups of:", a: ["Cells", "Atoms", "Heat", "Degrees"], c: 1, e: "Atoms are the building blocks that group together to form molecules." }
     ];
 
-    let currentQuestion = 0;
+    let currentIdx = 0;
+    let score = 0;
 
-    function loadQuestion() {
-        const quizContent = document.getElementById('quiz-content');
-        const q = quizData[currentQuestion];
-        const progress = document.getElementById('progress');
-        progress.style.width = `${((currentQuestion) / quizData.length) * 100}%`;
+    function renderQuestion() {
+        const q = questions[currentIdx];
+        const container = document.getElementById('content');
+        const stats = document.getElementById('stats');
+        const progress = document.getElementById('progress-bar');
+        
+        progress.style.width = `${(currentIdx / questions.length) * 100}%`;
+        stats.innerText = `Question ${currentIdx + 1} of ${questions.length}`;
 
-        quizContent.innerHTML = `
-            <div class="slide active">
-                <h2><i class="fas fa-microchip"></i> Question ${currentQuestion + 1}</h2>
-                <p style="font-size: 1.2rem; margin-bottom: 20px;">${q.question}</p>
-                <div class="options-container">
-                    ${q.options.map((opt, i) => `
-                        <button class="option-btn" onclick="checkAnswer(${i})">
+        container.innerHTML = `
+            <div class="slide">
+                <h2>${q.q}</h2>
+                <div class="options-grid">
+                    ${q.a.map((opt, i) => `
+                        <button class="option-btn" onclick="handleAnswer(${i})">
                             <i class="far fa-circle"></i> ${opt}
                         </button>
                     `).join('')}
                 </div>
-                <div id="feedback-box" class="feedback"></div>
-                <button id="next-btn" class="next-btn" style="display:none;" onclick="nextStep()">Next Question <i class="fas fa-arrow-right"></i></button>
+                <div id="feedback" class="feedback-area"></div>
+                <button id="next-btn" class="btn-action" style="display:none" onclick="nextQuestion()">Next <i class="fas fa-chevron-right"></i></button>
             </div>
         `;
     }
 
-    window.checkAnswer = function(index) {
-        const q = quizData[currentQuestion];
-        const feedbackBox = document.getElementById('feedback-box');
+    window.handleAnswer = (idx) => {
+        const q = questions[currentIdx];
+        const feedback = document.getElementById('feedback');
         const nextBtn = document.getElementById('next-btn');
         const buttons = document.querySelectorAll('.option-btn');
+        
+        buttons.forEach(b => b.disabled = true);
 
-        buttons.forEach(btn => btn.disabled = true);
-
-        if (index === q.correct) {
-            feedbackBox.innerHTML = `<strong><i class="fas fa-check-circle"></i> Correct!</strong><br>${q.explanation}`;
-            feedbackBox.className = "feedback correct";
+        if (idx === q.c) {
+            score++;
+            feedback.innerHTML = `<strong><i class="fas fa-check-circle"></i> Correct!</strong><br>${q.e}`;
+            feedback.className = "feedback-area correct";
         } else {
-            feedbackBox.innerHTML = `<strong><i class="fas fa-times-circle"></i> Not quite.</strong><br>The correct answer was: <em>${q.options[q.correct]}</em>. ${q.explanation}`;
-            feedbackBox.className = "feedback wrong";
+            feedback.innerHTML = `<strong><i class="fas fa-exclamation-circle"></i> Incorrect.</strong><br>The correct answer is: <strong>${q.a[q.c]}</strong>.<br>${q.e}`;
+            feedback.className = "feedback-area wrong";
         }
 
-        feedbackBox.style.display = "block";
+        feedback.style.display = "block";
         nextBtn.style.display = "block";
     };
 
-    window.nextStep = function() {
-        currentQuestion++;
-        if (currentQuestion < quizData.length) {
-            loadQuestion();
+    window.nextQuestion = () => {
+        currentIdx++;
+        if (currentIdx < questions.length) {
+            renderQuestion();
         } else {
-            document.getElementById('progress').style.width = "100%";
-            document.getElementById('quiz-content').innerHTML = `
-                <div class="slide active" style="text-align:center;">
-                    <h2><i class="fas fa-graduation-cap"></i> Quiz Complete!</h2>
-                    <p>Excellent work, DRK. You have reviewed the core concepts of Unit 4.</p>
-                    <button class="next-btn" style="float:none;" onclick="location.reload()">Restart Quiz</button>
-                </div>
-            `;
+            showResults();
         }
     };
 
-    loadQuestion();
+    function showResults() {
+        const container = document.getElementById('content');
+        const progress = document.getElementById('progress-bar');
+        progress.style.width = "100%";
+        
+        container.innerHTML = `
+            <div style="text-align:center;">
+                <h2><i class="fas fa-award"></i> Quiz Complete!</h2>
+                <p style="font-size: 1.5rem;">Your Score: <strong>${score} / ${questions.length}</strong></p>
+                <p>Excellent review of Unit 4 Thermal Energy, Ishan - ID5.</p>
+                <button class="btn-action" style="float:none;" onclick="location.reload()">Try Again</button>
+            </div>
+        `;
+    }
+
+    renderQuestion();
 </script>
 
 </body>
