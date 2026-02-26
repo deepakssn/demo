@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Unit 4: Thermal Energy — Interactive Quiz</title>
+  <style>
+    :root{
+      --bg: #f7f8fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #4b5563;
+      --line: rgba(0,0,0,0.12);
+      --blue: #0053e2;
+      --good: #16a34a;
+      --bad: #dc2626;
+      --warn: #d97706;
+
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --radius: 18px;
+
+      font-family: 'Everyday Sans', 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible Mono', 'Arial', sans-serif;
+    }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(0,83,226,.10), transparent 60%),
+                  radial-gradient(900px 500px at 110% 10%, rgba(0,83,226,.08), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+      text-shadow: 0 0 1px rgba(0, 0, 0, 0.25);
+    }
+    header{
+      padding: 24px 18px 10px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .titleRow{
+      display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap;
+    }
+    h1{
+      margin:0;
+      font-size: 28px;
+      letter-spacing: .2px;
+      font-weight: 800;
+    }
+    .subtitle{
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14.5px;
+      line-height: 1.45;
+      max-width: 880px;
+    }
+    .pillbar{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.75);
+      box-shadow: 0 4px 14px rgba(0,0,0,.04);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .dot{
+      width:9px; height:9px; border-radius:999px; background: var(--blue);
+      box-shadow: 0 0 0 4px rgba(0,83,226,.12);
+    }
+
+    main{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 10px 18px 34px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+    }
+    @media (max-width: 940px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .sectionTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin-bottom: 10px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .small{
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+
+    .progressWrap{
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .progress{
+      height: 12px;
+      background: rgba(0,0,0,.06);
+      border-radius: 999px;
+      overflow:hidden;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--blue), rgba(0,83,226,.65));
+      border-radius: 999px;
+      transition: width .35s ease;
+    }
+    .statRow{
+      display:flex; gap:10px; flex-wrap:wrap;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .stat{
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(0,0,0,.02);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+    button{
+      border: none;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor:pointer;
+      background: var(--blue);
+      color: white;
+      box-shadow: 0 10px 18px rgba(0,83,226,.18);
+      transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+    button:hover{ transform: translateY(-1px); box-shadow: 0 14px 22px rgba(0,83,226,.22); }
+    button:active{ transform: translateY(0px); opacity:.95; }
+    button.secondary{
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 18px rgba(0,0,0,.05);
+    }
+    button.ghost{
+      background: transparent;
+      color: var(--text);
+      border: 1px dashed rgba(0,0,0,.20);
+      box-shadow: none;
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+      box-shadow:none;
+    }
+
+    .q{
+      border: 1px solid rgba(0,0,0,.10);
+      border-radius: 16px;
+      padding: 14px 12px;
+      margin: 12px 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.01), rgba(0,0,0,.00));
+    }
+    .qHead{
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 12px;
+      margin-bottom: 10px;
+    }
+    .qNum{
+      font-weight: 900;
+      color: var(--blue);
+      font-size: 13px;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+    .qText{
+      font-size: 15.5px;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-top: 2px;
+    }
+    .qMeta{
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .options{
+      display:flex;
+      flex-direction:column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    label.opt{
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+      padding: 10px 10px;
+      border: 1px solid rgba(0,0,0,.10);
+      border-radius: 14px;
+      cursor:pointer;
+      background: rgba(255,255,255,.7);
+      transition: border-color .2s ease, transform .08s ease;
+    }
+    label.opt:hover{
+      border-color: rgba(0,83,226,.35);
+      transform: translateY(-1px);
+    }
+    input[type="radio"]{
+      margin-top: 3px;
+      accent-color: var(--blue);
+    }
+    textarea{
+      width: 100%;
+      min-height: 80px;
+      resize: vertical;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,.14);
+      padding: 10px 10px;
+      font-size: 14px;
+      line-height: 1.35;
+      outline: none;
+    }
+    textarea:focus{
+      border-color: rgba(0,83,226,.45);
+      box-shadow: 0 0 0 4px rgba(0,83,226,.10);
+    }
+
+    .feedback{
+      margin-top: 10px;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,.10);
+      background: rgba(0,0,0,.02);
+      display:none;
+    }
+    .feedback.good{
+      border-color: rgba(22,163,74,.25);
+      background: rgba(22,163,74,.08);
+    }
+    .feedback.bad{
+      border-color: rgba(220,38,38,.25);
+      background: rgba(220,38,38,.08);
+    }
+    .fbTitle{
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .fbText{
+      font-size: 13.5px;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .results{
+      display:none;
+      margin-top: 10px;
+      border-top: 1px solid rgba(0,0,0,.10);
+      padding-top: 12px;
+    }
+    .scoreBig{
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--blue);
+      margin: 0;
+    }
+    .resultLine{
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 6px;
+      line-height: 1.35;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.75);
+      margin-top: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .badge .bDot{
+      width:9px; height:9px; border-radius:999px;
+      background: var(--good);
+      box-shadow: 0 0 0 4px rgba(22,163,74,.12);
+    }
+    .badge.warn .bDot{
+      background: var(--warn);
+      box-shadow: 0 0 0 4px rgba(217,119,6,.12);
+    }
+    .badge.bad .bDot{
+      background: var(--bad);
+      box-shadow: 0 0 0 4px rgba(220,38,38,.12);
+    }
+
+    .miniHelp{
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 10px 0 0;
+    }
+    .list{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .fadeIn{
+      animation: fadeIn .25s ease both;
+    }
+    @keyframes fadeIn{
+      from{ opacity: 0; transform: translateY(6px); }
+      to{ opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="titleRow">
+      <h1>Unit 4: Thermal Energy — Interactive Quiz</h1>
+    </div>
+    <p class="subtitle">
+      Covers: temperature vs thermal energy, particle motion, heat transfer (conduction / convection / radiation),
+      equilibrium, absolute zero, conductors/insulators, and thermos + cooking reflections.
+    </p>
+    <div class="pillbar">
+      <div class="pill"><span class="dot"></span> 6th Grade • Dublin School District</div>
+      <div class="pill"><span class="dot"></span> Instant feedback + score</div>
+      <div class="pill"><span class="dot"></span> MCQ + True/False + Short answers</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="card" id="quizCard">
+        <div class="sectionTitle">
+          <h2>Quiz</h2>
+          <div class="small">Answer everything, then press <b>Submit</b>.</div>
+        </div>
+        <div id="quiz"></div>
+
+        <div class="controls">
+          <button id="submitBtn">Submit</button>
+          <button class="secondary" id="retryBtn" disabled>Try Again</button>
+          <button class="ghost" id="showBtn">Show Answers</button>
+        </div>
+
+        <div class="results" id="results">
+          <p class="scoreBig" id="scoreBig">0%</p>
+          <div class="resultLine" id="resultLine"></div>
+          <div class="badge" id="badge"><span class="bDot"></span><span id="badgeText">—</span></div>
+          <p class="miniHelp" id="nextSteps"></p>
+        </div>
+      </section>
+
+      <aside class="card">
+        <div class="sectionTitle">
+          <h2>Status</h2>
+          <div class="small">Progress updates as you answer</div>
+        </div>
+
+        <div class="progressWrap">
+          <div class="progress"><div class="bar" id="bar"></div></div>
+          <div class="statRow">
+            <div class="stat"><b id="answered">0</b> answered</div>
+            <div class="stat"><b id="total">0</b> total</div>
+            <div class="stat"><b id="time">00:00</b> time</div>
+          </div>
+        </div>
+
+        <p class="miniHelp">
+          Tip: For short answers, a simple 1–2 sentence explanation is enough.
+        </p>
+
+        <ul class="list">
+          <li><b>Temperature</b> = average kinetic energy (average particle motion)</li>
+          <li><b>Thermal energy</b> = total kinetic energy of all particles (depends on amount of matter)</li>
+          <li><b>Heat transfer</b> goes hot → cold until equilibrium</li>
+        </ul>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    // Quiz data (Unit 4: Thermal Energy)
+    const quizData = [
+      // Multiple choice (A-D)
+      {
+        id: "q1", type: "mcq", points: 1,
+        prompt: "Temperature is best defined as…",
+        options: [
+          "Total kinetic energy of all particles",
+          "Average kinetic energy of particles",
+          "How much matter an object has",
+          "How fast heat moves"
+        ],
+        answer: 1,
+        explain: "Temperature measures the average kinetic energy (average particle motion)."
+      },
+      {
+        id: "q2", type: "mcq", points: 1,
+        prompt: "Thermal energy depends on…",
+        options: [
+          "Temperature only",
+          "Mass/amount of matter only",
+          "Temperature and amount of matter",
+          "Color only"
+        ],
+        answer: 2,
+        explain: "Thermal energy is total particle kinetic energy, so it depends on temperature and number of particles."
+      },
+      {
+        id: "q3", type: "mcq", points: 1,
+        prompt: "Two objects can have the same temperature but different thermal energy because…",
+        options: [
+          "One has more particles/mass",
+          "One is shinier",
+          "One is older",
+          "One is a solid"
+        ],
+        answer: 0,
+        explain: "Same average (temperature) is possible, but total energy can differ if one object has more particles."
+      },
+      {
+        id: "q4", type: "mcq", points: 1,
+        prompt: "Heat (thermal energy transfer) usually moves from…",
+        options: [
+          "Cold → hot",
+          "Hot → cold",
+          "Big → small",
+          "Slow → fast"
+        ],
+        answer: 1,
+        explain: "Thermal energy transfers from warmer to cooler until equilibrium."
+      },
+      {
+        id: "q5", type: "mcq", points: 1,
+        prompt: "Conduction is heat transfer mainly by…",
+        options: [
+          "Waves",
+          "Fluid motion",
+          "Direct contact",
+          "Magnets"
+        ],
+        answer: 2,
+        explain: "Conduction is transfer through direct contact (common in solids like metal)."
+      },
+      {
+        id: "q6", type: "mcq", points: 1,
+        prompt: "Convection happens mostly in…",
+        options: [
+          "Solids only",
+          "Liquids and gases",
+          "Metals only",
+          "Glass only"
+        ],
+        answer: 1,
+        explain: "Convection is heat transfer by moving fluids (liquids/gases), often due to density differences."
+      },
+      {
+        id: "q7", type: "mcq", points: 1,
+        prompt: "Radiation is heat transfer by…",
+        options: [
+          "Direct touching",
+          "Moving air/water currents",
+          "Electromagnetic waves (like sunlight)",
+          "Sound waves"
+        ],
+        answer: 2,
+        explain: "Radiation transfers energy through waves; sunlight is the classic example."
+      },
+      {
+        id: "q8", type: "mcq", points: 1,
+        prompt: "A thermos keeps liquid warm mainly because it…",
+        options: [
+          "Increases the liquid’s temperature forever",
+          "Reduces heat transfer to the outside",
+          "Makes molecules stop moving",
+          "Creates new heat"
+        ],
+        answer: 1,
+        explain: "A thermos reduces heat transfer (limits conduction/convection and often radiation too)."
+      },
+
+      // True/False
+      {
+        id: "q9", type: "tf", points: 1,
+        prompt: "If temperature increases, molecules usually move faster.",
+        answer: "true",
+        explain: "Higher temperature means greater average kinetic energy → faster particle motion."
+      },
+      {
+        id: "q10", type: "tf", points: 1,
+        prompt: "Thermal equilibrium means two objects have reached the same temperature.",
+        answer: "true",
+        explain: "At equilibrium, temperature is the same and net heat transfer stops."
+      },
+      {
+        id: "q11", type: "tf", points: 1,
+        prompt: "“Bigger object” always means “hotter object.”",
+        answer: "false",
+        explain: "Bigger objects can have more thermal energy, but they are not always hotter (temperature can be the same or lower)."
+      },
+      {
+        id: "q12", type: "tf", points: 1,
+        prompt: "Absolute zero is the lowest possible temperature.",
+        answer: "true",
+        explain: "Absolute zero is the lowest possible temperature (minimum particle motion idea)."
+      },
+
+      // Short answers (graded by keyword checks, with partial credit)
+      {
+        id: "q13", type: "short", points: 2,
+        prompt: "In 1–2 sentences: What is the difference between temperature and thermal energy?",
+        rubric: [
+          { mustIncludeAny: ["average"], label: "Mentions temperature is average kinetic energy / average motion" },
+          { mustIncludeAny: ["total", "all particles", "amount of matter", "mass", "number of particles"], label: "Mentions thermal energy is total kinetic energy (depends on amount of matter)" }
+        ],
+        sample: "Temperature is the average kinetic energy (average motion) of particles. Thermal energy is the total kinetic energy of all particles, so it depends on temperature and the amount of matter.",
+        explain: "Key idea: temperature = average; thermal energy = total (depends on number of particles)."
+      },
+      {
+        id: "q14", type: "short", points: 2,
+        prompt: "Give one real-life example of radiation (heat transfer by waves).",
+        rubric: [
+          { mustIncludeAny: ["sun", "sunlight", "fire", "campfire", "heater", "heat lamp"], label: "Mentions a valid radiation source" }
+        ],
+        sample: "The Sun warming your skin is radiation.",
+        explain: "Radiation transfers heat through waves (like sunlight)."
+      },
+      {
+        id: "q15", type: "short", points: 2,
+        prompt: "Food warmed in sunlight using a magnifying glass. Which heat transfer method is that, and why?",
+        rubric: [
+          { mustIncludeAny: ["radiation"], label: "Identifies radiation" },
+          { mustIncludeAny: ["sunlight", "waves", "light", "focus", "concentrate"], label: "Explains magnifying glass focuses sunlight (energy) to heat faster" }
+        ],
+        sample: "Radiation, because the magnifying glass focuses sunlight (energy waves) onto the food and heats it faster.",
+        explain: "Sunlight is radiation; focusing it increases energy on a smaller area."
+      },
+
+      // Bonus
+      {
+        id: "q16", type: "short", points: 2,
+        prompt: "Bonus: A metal spoon and a wooden spoon sit in the same hot soup. Metal feels hotter. Why?",
+        rubric: [
+          { mustIncludeAny: ["conductor", "conducts", "conduction"], label: "Mentions metal conducts heat better (conductor)" },
+          { mustIncludeAny: ["wood", "insulator", "doesn't transfer", "slower"], label: "Mentions wood is an insulator / transfers heat slower" }
+        ],
+        sample: "Metal is a good conductor, so it transfers heat to your hand quickly by conduction. Wood is an insulator, so it transfers heat much more slowly.",
+        explain: "Feeling hotter is about how fast heat transfers to your skin."
+      }
+    ];
+
+    const quizEl = document.getElementById('quiz');
+    const submitBtn = document.getElementById('submitBtn');
+    const retryBtn = document.getElementById('retryBtn');
+    const showBtn = document.getElementById('showBtn');
+
+    const answeredEl = document.getElementById('answered');
+    const totalEl = document.getElementById('total');
+    const barEl = document.getElementById('bar');
+    const resultsEl = document.getElementById('results');
+    const scoreBigEl = document.getElementById('scoreBig');
+    const resultLineEl = document.getElementById('resultLine');
+    const badgeEl = document.getElementById('badge');
+    const badgeTextEl = document.getElementById('badgeText');
+    const nextStepsEl = document.getElementById('nextSteps');
+    const timeEl = document.getElementById('time');
+
+    totalEl.textContent = quizData.length;
+
+    // Timer
+    let startTime = Date.now();
+    let timer = setInterval(() => {
+      const s = Math.floor((Date.now() - startTime) / 1000);
+      const mm = String(Math.floor(s / 60)).padStart(2,'0');
+      const ss = String(s % 60).padStart(2,'0');
+      timeEl.textContent = `${mm}:${ss}`;
+    }, 250);
+
+    function escapeHtml(str){
+      return str.replace(/[&<>"']/g, (m) => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+      }[m]));
+    }
+
+    function renderQuiz(){
+      quizEl.innerHTML = '';
+      quizData.forEach((q, idx) => {
+        const num = idx + 1;
+
+        const box = document.createElement('div');
+        box.className = 'q fadeIn';
+        box.dataset.qid = q.id;
+
+        const head = document.createElement('div');
+        head.className = 'qHead';
+        head.innerHTML = `
+          <div>
+            <div class="qNum">Question ${num}</div>
+            <div class="qText">${escapeHtml(q.prompt)}</div>
+          </div>
+          <div class="qMeta">${q.points} pt${q.points>1?'s':''}</div>
+        `;
+        box.appendChild(head);
+
+        const body = document.createElement('div');
+
+        if(q.type === 'mcq'){
+          const opts = document.createElement('div');
+          opts.className = 'options';
+          q.options.forEach((opt, i) => {
+            const id = `${q.id}_${i}`;
+            const lab = document.createElement('label');
+            lab.className = 'opt';
+            lab.innerHTML = `
+              <input type="radio" name="${q.id}" id="${id}" value="${i}">
+              <div><b>${String.fromCharCode(65+i)}.</b> ${escapeHtml(opt)}</div>
+            `;
+            opts.appendChild(lab);
+          });
+          body.appendChild(opts);
+        }
+
+        if(q.type === 'tf'){
+          const opts = document.createElement('div');
+          opts.className = 'options';
+          ['true','false'].forEach((val) => {
+            const id = `${q.id}_${val}`;
+            const lab = document.createElement('label');
+            lab.className = 'opt';
+            lab.innerHTML = `
+              <input type="radio" name="${q.id}" id="${id}" value="${val}">
+              <div><b>${val.toUpperCase()}</b></div>
+            `;
+            opts.appendChild(lab);
+          });
+          body.appendChild(opts);
+        }
+
+        if(q.type === 'short'){
+          const ta = document.createElement('textarea');
+          ta.name = q.id;
+          ta.placeholder = "Type your answer here…";
+          body.appendChild(ta);
+          const hint = document.createElement('div');
+          hint.className = 'small';
+          hint.style.marginTop = '8px';
+          hint.textContent = "Graded by key ideas (not spelling).";
+          body.appendChild(hint);
+        }
+
+        box.appendChild(body);
+
+        const fb = document.createElement('div');
+        fb.className = 'feedback';
+        fb.id = `fb_${q.id}`;
+        box.appendChild(fb);
+
+        quizEl.appendChild(box);
+      });
+
+      // Update progress on input
+      quizEl.addEventListener('change', updateProgress);
+      quizEl.addEventListener('input', updateProgress);
+      updateProgress();
+    }
+
+    function getUserAnswer(q){
+      if(q.type === 'mcq' || q.type === 'tf'){
+        const chosen = document.querySelector(`input[name="${q.id}"]:checked`);
+        return chosen ? chosen.value : null;
+      }
+      if(q.type === 'short'){
+        const ta = document.querySelector(`textarea[name="${q.id}"]`);
+        return ta ? ta.value.trim() : '';
+      }
+      return null;
+    }
+
+    function updateProgress(){
+      let answered = 0;
+      quizData.forEach(q => {
+        const a = getUserAnswer(q);
+        if(q.type === 'short'){
+          if(a && a.length >= 3) answered++;
+        } else {
+          if(a !== null) answered++;
+        }
+      });
+      answeredEl.textContent = answered;
+      const pct = Math.round((answered / quizData.length) * 100);
+      barEl.style.width = `${pct}%`;
+    }
+
+    function normalize(s){
+      return (s || '').toLowerCase().replace(/\s+/g,' ').trim();
+    }
+
+    function gradeShort(q, text){
+      const t = normalize(text);
+      if(!t) return { score: 0, max: q.points, notes: ["No answer given."], matched: [] };
+
+      let matched = [];
+      q.rubric.forEach(r => {
+        const ok = r.mustIncludeAny.some(k => t.includes(k.toLowerCase()));
+        if(ok) matched.push(r.label);
+      });
+
+      // Simple scoring: each rubric item gives equal credit
+      const items = q.rubric.length;
+      const per = q.points / items;
+      const score = Math.max(0, Math.min(q.points, matched.length * per));
+
+      let notes = [];
+      if(matched.length === items){
+        notes.push("Good — you included the key ideas.");
+      } else {
+        notes.push("Missing one idea. Compare with the sample answer.");
+      }
+
+      return { score, max: q.points, notes, matched };
+    }
+
+    function showFeedback(q, isCorrect, detail, earned, max){
+      const fb = document.getElementById(`fb_${q.id}`);
+      fb.style.display = 'block';
+      fb.classList.remove('good','bad');
+      fb.classList.add(isCorrect ? 'good' : 'bad');
+
+      const title = isCorrect ? "Correct" : "Needs review";
+      const pts = `(${earned.toFixed(1).replace('.0','')}/${max} pts)`;
+
+      fb.innerHTML = `
+        <div class="fbTitle">${title} ${pts}</div>
+        <div class="fbText">${escapeHtml(detail)}</div>
+      `;
+    }
+
+    function submit(){
+      let totalPts = quizData.reduce((s,q)=>s+q.points,0);
+      let earnedPts = 0;
+
+      // Track weak areas
+      const misses = [];
+
+      quizData.forEach(q => {
+        const user = getUserAnswer(q);
+
+        if(q.type === 'mcq'){
+          const chosen = (user === null) ? null : Number(user);
+          const correct = chosen === q.answer;
+          const earned = correct ? q.points : 0;
+          earnedPts += earned;
+
+          const detail = correct
+            ? q.explain
+            : `Correct answer: ${String.fromCharCode(65+q.answer)}. ${q.options[q.answer]} — ${q.explain}`;
+
+          showFeedback(q, correct, detail, earned, q.points);
+          if(!correct) misses.push(q.prompt);
+        }
+
+        if(q.type === 'tf'){
+          const correct = (user !== null) && (String(user) === q.answer);
+          const earned = correct ? q.points : 0;
+          earnedPts += earned;
+
+          const detail = correct
+            ? q.explain
+            : `Correct answer: ${q.answer.toUpperCase()} — ${q.explain}`;
+
+          showFeedback(q, correct, detail, earned, q.points);
+          if(!correct) misses.push(q.prompt);
+        }
+
+        if(q.type === 'short'){
+          const g = gradeShort(q, user || '');
+          earnedPts += g.score;
+
+          const isCorrect = (g.score >= q.points - 0.01);
+          const detail = isCorrect
+            ? `${q.explain}`
+            : `${q.explain}\nSample: ${q.sample}`;
+
+          showFeedback(q, isCorrect, detail, g.score, q.points);
+          if(!isCorrect) misses.push(q.prompt);
+        }
+      });
+
+      const pct = Math.round((earnedPts / totalPts) * 100);
+      scoreBigEl.textContent = `${pct}%`;
+
+      resultLineEl.textContent = `Score: ${earnedPts.toFixed(1).replace('.0','')} / ${totalPts} points • Questions missed: ${misses.length}`;
+      resultsEl.style.display = 'block';
+
+      // Badge
+      badgeEl.classList.remove('warn','bad');
+      badgeEl.classList.add('badge');
+      if(pct >= 90){
+        badgeTextEl.textContent = "Strong understanding";
+        badgeEl.classList.remove('warn','bad');
+        badgeEl.querySelector('.bDot').style.background = getComputedStyle(document.documentElement).getPropertyValue('--good');
+      } else if(pct >= 70){
+        badgeTextEl.textContent = "Good — review a couple topics";
+        badgeEl.classList.add('warn');
+        badgeEl.querySelector('.bDot').style.background = getComputedStyle(document.documentElement).getPropertyValue('--warn');
+      } else {
+        badgeTextEl.textContent = "Needs more review";
+        badgeEl.classList.add('bad');
+        badgeEl.querySelector('.bDot').style.background = getComputedStyle(document.documentElement).getPropertyValue('--bad');
+      }
+
+      // Next steps
+      if(misses.length === 0){
+        nextStepsEl.textContent = "Next: Try explaining temperature vs thermal energy using a real example (same temp, different sizes).";
+      } else {
+        const top = misses.slice(0,3).map((m,i)=>`${i+1}) ${m}`).join("  ");
+        nextStepsEl.textContent =
+          `Focus next on: ${top}${misses.length>3 ? " (and a few more)." : ""} ` +
+          `Tip: remember average (temperature) vs total (thermal energy), and the three transfer types.`;
+      }
+
+      submitBtn.disabled = true;
+      retryBtn.disabled = false;
+    }
+
+    function resetQuiz(){
+      // clear inputs
+      document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+      document.querySelectorAll('textarea').forEach(t => t.value = '');
+
+      // hide feedback
+      quizData.forEach(q => {
+        const fb = document.getElementById(`fb_${q.id}`);
+        fb.style.display = 'none';
+        fb.classList.remove('good','bad');
+        fb.innerHTML = '';
+      });
+
+      resultsEl.style.display = 'none';
+      submitBtn.disabled = false;
+      retryBtn.disabled = true;
+
+      // reset timer
+      startTime = Date.now();
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showAnswers(){
+      quizData.forEach(q => {
+        if(q.type === 'mcq'){
+          const id = `${q.id}_${q.answer}`;
+          const el = document.getElementById(id);
+          if(el) el.checked = true;
+        }
+        if(q.type === 'tf'){
+          const id = `${q.id}_${q.answer}`;
+          const el = document.getElementById(id);
+          if(el) el.checked = true;
+        }
+        if(q.type === 'short'){
+          const ta = document.querySelector(`textarea[name="${q.id}"]`);
+          if(ta && !ta.value.trim()){
+            ta.value = q.sample;
+          }
+        }
+      });
+      updateProgress();
+      window.scrollTo({ top: document.getElementById('quizCard').offsetTop - 10, behavior: 'smooth' });
+    }
+
+    submitBtn.addEventListener('click', submit);
+    retryBtn.addEventListener('click', resetQuiz);
+    showBtn.addEventListener('click', showAnswers);
+
+    renderQuiz();
+  </script>
+</body>
+</html>
